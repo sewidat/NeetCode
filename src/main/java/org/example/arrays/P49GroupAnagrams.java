@@ -55,16 +55,40 @@ import java.util.Map;
 public class P49GroupAnagrams {
 
     public List<List<String>> groupAnagrams(String[] strs) {
-        // TODO: implement
-        return new ArrayList<>();
+        // Step 1: Create HashMap to store groups by their canonical key
+        HashMap<String, List<String>> map = new HashMap<>();
+
+        // Step 2: Process each string
+        for (String str : strs) {
+            // Build a character-count array of size 26 (for a-z)
+            int[] count = new int[26];
+            for (char c : str.toCharArray()) {
+                count[c - 'a']++;
+            }
+
+            // Convert count array to string key (e.g., "1#0#1#..." format)
+            StringBuilder key = new StringBuilder();
+            for (int i = 0; i < 26; i++) {
+                key.append(count[i]).append("#");
+            }
+            String canonicalKey = key.toString();
+
+            // Add the original string to the group for this key
+            map.putIfAbsent(canonicalKey, new ArrayList<>());
+            map.get(canonicalKey).add(str);
+        }
+
+        // Step 3: Return all groups as a List<List<String>>
+        return new ArrayList<>(map.values());
     }
 
     public static void main(String[] args) {
         P49GroupAnagrams sol = new P49GroupAnagrams();
         // Example 1: expected groups containing [bat], [nat,tan], [ate,eat,tea]
-        // System.out.println(sol.groupAnagrams(new String[]{"eat","tea","tan","ate","nat","bat"}));
+        System.out.println("Example 1:");
+        System.out.println(sol.groupAnagrams(new String[]{"eat","tea","tan","ate","nat","bat"}));
         // Example 2: expected [[""]]
-        // System.out.println(sol.groupAnagrams(new String[]{""}));
-        System.out.println("P49GroupAnagrams — uncomment examples above to test.");
+        System.out.println("Example 2:");
+        System.out.println(sol.groupAnagrams(new String[]{""}));
     }
 }
